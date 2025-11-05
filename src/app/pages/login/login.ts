@@ -59,6 +59,9 @@ export class Login {
 
   private resetForm(){
     this.loginForm.reset();
+    Object.keys(this.loginForm.controls).forEach((key) => {
+      this.loginForm.get(key)?.setErrors(null); // clear validation errors
+    });
     this.isSubmitting = false;
   }
 }
