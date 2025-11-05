@@ -1,4 +1,5 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { computed, inject, Injectable, PLATFORM_ID, signal } from "@angular/core";
 
 @Injectable({providedIn:'root'})
 export class AppStateService {
@@ -14,11 +15,18 @@ export class AppStateService {
     isLoggedIn:this.isLoggedIn()
   }))
 
+  private platformId = inject(PLATFORM_ID);
+
+  private get isBrowser(){
+    return isPlatformBrowser(this.platformId);
+  }
+
   private get hasLocalStorage():boolean{
     return typeof window !== 'undefined' && !!window.localStorage;
   }
 
   initFromStorage(){
+    if(!this.isBrowser) return;
     if(!this.hasLocalStorage) return;
 
     const token = localStorage.getItem("token");
