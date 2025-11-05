@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
+import { AppStateService } from './app-state.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
     private apiUrl = "https://api.escuelajs.co/api/v1";; // demo login API
+
+    constructor(private appState: AppStateService){
+      
+    }
 
     async login(email:string, password:string){
       try {
@@ -30,10 +35,14 @@ export class AuthService {
         const {access_token,refresh_token} = data;
         localStorage.setItem('token',access_token);
         localStorage.setItem('refreshToken',refresh_token);
+        this.appState.setToken(access_token);
+        this.appState.setRefreshToken(refresh_token);
         
         const userData = await this.getUser();
         console.log('get userData ::',userData);
         localStorage.setItem('user',JSON.stringify(userData));
+        this.appState.setUser(userData);
+        this.appState.setIsLoggedIn(true);
 
         return true;
       } catch (error) {
@@ -47,7 +56,7 @@ export class AuthService {
         method:"GET",
         headers:{
           "Content-type":"application/json",
-          "Authorization":"Bearer "+localStorage.getItem('token')
+          "Authorization":"Bearer "+this.appState.getToken()
         }
       });
 
@@ -61,5 +70,6 @@ export class AuthService {
 
     logout(){
       localStorage.clear();
+      this.appState.clearAll();
     }
 }

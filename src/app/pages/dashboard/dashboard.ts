@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppStateService } from '../../services/app-state.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,13 +10,13 @@ import { Router } from '@angular/router';
 })
 export class Dashboard {
   user:any;
-  constructor(private router:Router){
+  constructor(private router:Router,private appState: AppStateService){
 
   }
 
   ngOnInit(){
-    let temp = localStorage.getItem("user") ; 
-    this.user = JSON.parse(temp!) ;
+    //let temp = localStorage.getItem("user") ; 
+    this.user = this.appState.getUser(); //JSON.parse(temp!) ;
     console.log('this.user :::::',this.user);
   }
 

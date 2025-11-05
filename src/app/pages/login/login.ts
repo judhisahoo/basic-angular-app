@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AppStateService } from '../../services/app-state.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class Login {
   errorMessage = '';
   isSubmitting = false;
 
-  constructor(private auth:AuthService, private router: Router, private fb:FormBuilder ){
+  constructor(private auth:AuthService, private router: Router, private fb:FormBuilder, private appState: AppStateService ){
 
   }
 
@@ -26,6 +27,10 @@ export class Login {
       email: ["",[Validators.required,Validators.email]],
       password: ["",[Validators.required,Validators.minLength(6)]]
     });
+
+    if(this.appState.getIsLoggedIn()){
+      this.router.navigate(["/dashboard"]);
+    }
   }
 
   get f(){
